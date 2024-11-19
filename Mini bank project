@@ -1,0 +1,78 @@
+import os
+import json
+data_file = "account_data.json"
+
+def load_account_data(username=None):
+    if username == None:
+        return "Please provide the username"
+    if os.path.exists(data_file):
+        with open(data_file, "r") as file:
+            try:
+                accounts = json.load(file)
+                if username in accounts:
+                    return accounts[username]
+            except:
+                return {}
+    return {}
+
+def saveacc(username, moneyinbank):
+    if os.path.exists(data_file):
+        with open(data_file, "r") as file:
+            try:
+                accounts = json.load(file)
+            except:
+                accounts = {}
+    else:
+        accounts = {}
+    accounts[username] = {"balance": moneyinbank}
+    with open(data_file, "w") as file:
+        json.dump(accounts, file, indent=4)
+
+def customer_input():
+    while True:
+        user_name = input("Enter Your Bank username: ")
+        if user_name.isalpha():
+            return user_name  
+        else:
+            print("Your Bank username cannot consist of Numbers and Special characters")
+
+def main():
+    username = customer_input()
+    accdata = load_account_data(username)
+    if accdata:
+        moneyinbank = accdata["balance"]
+    else:
+        moneyinbank = 1000
+        saveacc(username, moneyinbank)
+    while True:
+        print("\nselect any option from below")
+        print("1.Deposit")
+        print("2.withdraw")
+        print("3.show customer info")
+        print("4.Exit\n")
+        opt = int(input())
+        if(opt == 1):
+            dep = int(input("Enter the money you want to deposit\n"))
+            moneyinbank += dep
+            saveacc(username, moneyinbank)
+        elif(opt == 2):
+            dep = int(input("Enter the money you want to withdraw\n"))
+            moneyinbankcurrnet = moneyinbank - dep
+            if moneyinbankcurrnet < 0:
+                print("Insufficient Balance,,,",end=' ')
+                print("current Balance: ", moneyinbank)
+                print(f"Your withdrawal amount is {dep} But your Balance is {moneyinbank}")
+            else:
+                moneyinbank = moneyinbankcurrnet
+                saveacc(username, moneyinbank)
+               
+        elif(opt == 3):
+            print(f"Username : {username}\nCur Bal : {moneyinbank}")
+        elif(opt == 4):
+            break
+        else:
+            print("Enter Valid option")
+            
+
+if __name__ == '__main__':
+    main()
