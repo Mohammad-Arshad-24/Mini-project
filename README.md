@@ -1,0 +1,1 @@
+This project simulates basic bank operations using JSON files to store customer names and bank balances. Users can perform transactions by referencing the bank name, allowing for efficient balance management and updates.
